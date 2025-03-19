@@ -16,7 +16,7 @@ cur.execute("""
     StockCode VARCHAR(20),
     Description TEXT,
     Quantity INT,
-    InvoiceDate VARCHAR(50),  
+    InvoiceDate TIMESTAMP,  
     UnitPrice NUMERIC(10, 2),
     CustomerID INT,
     Country VARCHAR(100)
