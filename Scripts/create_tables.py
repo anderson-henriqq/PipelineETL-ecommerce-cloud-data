@@ -1,7 +1,7 @@
 import psycopg2
 
 conn = psycopg2.connect(
-    dbname="e_commerce",
+    dbname="ecommerce",
     user="postgres",
     password="postgres",
     host="localhost",  # Ou o IP do servidor, se for remoto
@@ -11,7 +11,7 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 cur.execute(""" 
-    CREATE TABLE vendas_brutas (
+    CREATE TABLE IF NOT EXISTS vendas (
     InvoiceNo VARCHAR(20),
     StockCode VARCHAR(20),
     Description TEXT,
@@ -22,3 +22,7 @@ cur.execute("""
     Country VARCHAR(100)
 );
 """)
+
+conn.commit()  # Não se esqueça de confirmar a transação
+cur.close()  # Fechar o cursor
+conn.close()  # Fechar a conexão

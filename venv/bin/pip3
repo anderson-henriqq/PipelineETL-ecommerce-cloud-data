@@ -1,4 +1,4 @@
-#!/home/andersonhenriq/Documentos/Git/PipelineETL-ecommerce-cloud-data/venv/bin/python3
+#!/home/andersonhenriq/Git/PipelineETL-ecommerce-cloud-data/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

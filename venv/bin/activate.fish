@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /home/andersonhenriq/Documentos/Git/PipelineETL-ecommerce-cloud-data/venv
+set -gx VIRTUAL_ENV /home/andersonhenriq/Git/PipelineETL-ecommerce-cloud-data/venv
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH
