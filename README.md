@@ -173,15 +173,10 @@ Durante o desenvolvimento desta pipeline ETL, várias decisões foram tomadas pa
      - Essa modularidade facilita a replicação da pipeline para outros projetos ou a adaptação para uso com ferramentas de orquestração como Airflow.
      - A estrutura do código também permite a inclusão de novas etapas de processamento sem afetar o funcionamento existente.
 
-### 8. **Documentação Detalhada**
-   - **Decisão**: Incluí uma documentação detalhada no README, explicando cada etapa do processo e as decisões tomadas.
-   - **Justificativa**:
-     - A documentação clara e completa facilita a compreensão do projeto por outros desenvolvedores ou stakeholders.
-     - Também serve como um guia para futuras manutenções ou expansões da pipeline.
-
----
 
 Essas decisões foram tomadas com o objetivo de garantir que a pipeline seja eficiente, escalável e de fácil manutenção, ao mesmo tempo em que atende às necessidades de análise de dados do negócio.
+
+---
 
 ## Contribuição
 
