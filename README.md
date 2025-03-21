@@ -117,7 +117,7 @@ def create_bigquery_table(project_id, dataset_id, table_id, file_path):
 ```
 
 ## Dashboard no Power BI
-![dashboard](https://github.com/user-attachments/assets/7f149dbb-ea1b-485a-aabe-6fe0242118d0)
+![dashboard](https://github.com/user-attachments/assets/ef449f9b-2085-4896-bfbd-1b07314608fd)
 O dashboard no Power BI está configurado para se conectar diretamente à tabela do BigQuery que será gerada pela pipeline. Para utilizá-lo:
 
 1. Baixe o arquivo do dashboard em formato .pbix.
