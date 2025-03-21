@@ -1,7 +1,15 @@
-
 # Pipeline ETL para Dados de E-Commerce
 
-Este projeto consiste em uma pipeline ETL (Extract, Transform, Load) que extrai dados brutos de um bucket no Google Cloud Platform (GCP), realiza a limpeza e transformação dos dados, e os carrega em uma tabela do BigQuery para análise. Além disso, o projeto inclui um dashboard no Power BI conectado à tabela do BigQuery para visualização dos dados.
+Este projeto implementa uma pipeline ETL (Extract, Transform, Load) que tem como objetivo extrair dados brutos de um bucket no Google Cloud Platform (GCP), realizar a limpeza e transformação dos dados, e carregá-los em uma tabela do BigQuery para análise aprofundada. A pipeline é projetada para manipular dados transacionais de uma loja online, que opera no Reino Unido e se especializa na venda de presentes únicos para todas as ocasiões. O projeto também inclui um dashboard no Power BI, que se conecta diretamente à tabela do BigQuery, permitindo a visualização das métricas e insights dos dados de e-commerce.
+
+O conjunto de dados contém transações realizadas entre 01/12/2010 e 09/12/2011, registrando informações sobre o produto, como código, descrição, quantidade, preço unitário, e os dados do cliente, como ID e país. A seguir, um exemplo de linha do dataset:
+
+| invoiceno | stockcode | description                       | quantity | invoicedate           | unitprice | customerid | country       |
+|-----------|-----------|-----------------------------------|----------|-----------------------|-----------|------------|---------------|
+| 536365    | 85123A    | WHITE HANGING HEART T-LIGHT HOLDER | 6        | 2010-12-01 08:26:00   | 2.55      | 17850      | United Kingdom |
+| 536365    | 71053     | WHITE METAL LANTERN               | 6        | 2010-12-01 08:26:00   | 3.39      | 17850      | United Kingdom |
+
+Este é um conjunto de dados transnacional que contém todas as transações ocorridas entre 01/12/2010 e 09/12/2011 para uma empresa online registrada no Reino Unido. A empresa vende principalmente presentes exclusivos para todas as ocasiões, e muitos de seus clientes são atacadistas.
 
 ## Estrutura do Projeto
 
