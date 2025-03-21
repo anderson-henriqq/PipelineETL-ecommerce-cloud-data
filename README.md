@@ -1,6 +1,6 @@
 # Pipeline ETL para Dados de E-Commerce
 
-Este projeto implementa uma pipeline ETL (Extract, Transform, Load) que tem como objetivo extrair dados brutos de um bucket no Google Cloud Platform (GCP), realizar a limpeza e transformação dos dados, e carregá-los em uma tabela do BigQuery para análise aprofundada. A pipeline é projetada para manipular dados transacionais de uma loja online, que opera no Reino Unido e se especializa na venda de presentes únicos para todas as ocasiões. O projeto também inclui um dashboard no Power BI, que se conecta diretamente à tabela do BigQuery, permitindo a visualização das métricas e insights dos dados de e-commerce.
+Este projeto implementa uma pipeline ETL (Extract, Transform, Load) que tem como objetivo extrair dados brutos de um bucket no Google Cloud Platform (GCP), realizar a limpeza e transformação dos dados, e carregá-los em uma tabela do BigQuery para análise aprofundada. A pipeline é projetada para manipular dados transacionais de uma loja online, que opera no Reino Unido e se especializa na venda de presentes únicos para todas as ocasiões. O projeto também inclui um dashboard no Power BI, que pode se conectar diretamente à tabela do BigQuery gerada pela pipeline, permitindo a visualização das métricas e insights dos dados de e-commerce.
 
 O conjunto de dados contém transações realizadas entre 01/12/2010 e 09/12/2011, registrando informações sobre o produto, como código, descrição, quantidade, preço unitário, e os dados do cliente, como ID e país. A seguir, um exemplo de linha do dataset:
 
@@ -15,7 +15,7 @@ Este é um conjunto de dados transnacional que contém todas as transações oco
 
 O projeto está organizado em três pastas principais:
 
-- **E-Commerce Data**: Contém o dataset bruto (data.csv) e um script para baixar o dataset diretamente para o seu bucket no GCP.
+- **E-Commerce Data**: Contém o dataset bruto (data.csv) que deve ser feito o upload para o seu bucket no GCP.
 - **Pipeline Scripts**: Contém os scripts Python para execução da pipeline ETL:
   - `extract_and_transf.py`: Extrai o dataset do bucket do GCS, realiza a limpeza e transformação dos dados, e envia o dataset limpo para uma pasta específica no GCS.
   - `load_bigquery.py`: Carrega o dataset limpo no BigQuery, criando o dataset e a tabela se necessário.
@@ -33,9 +33,10 @@ Para executar este projeto, você precisará:
 ```bash
 gcloud auth login
 gcloud config set project [SEU_PROJETO_ID]
+gcloud config get-value project
 ```
 
-- **Bucket no GCS**: Crie um bucket no GCS e faça o upload do arquivo data.csv manualmente ou execute o script fornecido para fazer o upload automático.
+- **Bucket no GCS**: Crie um bucket no GCS e faça o upload do arquivo data.csv.
 
 ## Como Executar a Pipeline
 
@@ -70,7 +71,7 @@ from datetime import datetime
 from pytz import timezone
 
 # Configurações do GCS
-BUCKET_NAME = "case-pipeline-etl-ecommerce"
+BUCKET_NAME = "case-pipeline-etl-ecommerce" # Substitua nome do seu bucket
 FILE_NAME = "data.csv"
 PROJECT_ID = "swift-approach-454113-b5"  # Substitua pelo ID do seu projeto
 DESTINATION_FOLDER = "processed_data/"  # Pasta de destino no bucket
@@ -116,18 +117,73 @@ def create_bigquery_table(project_id, dataset_id, table_id, file_path):
 
 ## Dashboard no Power BI
 ![dashboard](https://github.com/user-attachments/assets/7f149dbb-ea1b-485a-aabe-6fe0242118d0)
-O dashboard no Power BI está conectado diretamente à tabela do BigQuery. Para utilizá-lo:
+O dashboard no Power BI está configurado para se conectar diretamente à tabela do BigQuery que será gerada pela pipeline. Para utilizá-lo:
 
-1. Abra o arquivo .pbix no Power BI.
-2. Conecte-se ao BigQuery utilizando suas credenciais do GCP.
-3. Explore os dados e visualize as métricas de e-commerce.
+1. Baixe o arquivo do dashboard em formato .pbix.
+2. Abra o arquivo no Power BI.
+3. Conecte-se ao BigQuery usando suas credenciais do GCP.
+4. Visualize e explore os dados e métricas de e-commerce conforme a tabela gerada pela pipeline.
+
+## Decisões de Projeto
+
+Durante o desenvolvimento desta pipeline ETL, várias decisões foram tomadas para garantir que o projeto fosse eficiente, escalável e de fácil manutenção. Abaixo estão as principais decisões e suas justificativas:
+
+### 1. **Escolha de Scripts Python para a Pipeline**
+   - **Decisão**: Optei por implementar a pipeline utilizando scripts Python em vez de ferramentas de orquestração como Apache Airflow.
+   - **Justificativa**: 
+     - A pipeline não é complexa o suficiente para justificar o uso de um orquestrador como o Airflow. A simplicidade dos scripts Python permite uma execução direta e fácil de entender.
+     - No entanto, a estrutura do projeto foi pensada para ser facilmente adaptável ao Airflow no futuro, caso a necessidade de orquestração e agendamento de tarefas se torne relevante.
+
+### 2. **Organização de Arquivos Processados por Data**
+   - **Decisão**: Implementei uma função que salva o dataset limpo em uma pasta nomeada com a data de execução da pipeline.
+   - **Justificativa**:
+     - Isso permite um histórico de execuções da pipeline, facilitando a auditoria e a recuperação de dados processados em datas específicas.
+     - A organização por data também ajuda a evitar sobreposição de arquivos e mantém o bucket do GCS organizado.
+
+### 3. **Criação da Coluna `totalprice`**
+   - **Decisão**: Adicionei uma coluna derivada chamada `totalprice`, que calcula o valor total de cada transação (quantidade × preço unitário).
+   - **Justificativa**:
+     - Essa coluna é essencial para análises financeiras, como cálculo de receita total, média de vendas por transação e outras métricas de negócios.
+     - O arredondamento para duas casas decimais garante precisão e consistência nos cálculos.
+
+### 4. **Processos de Limpeza e Transformação**
+   - **Decisão**: Implementei uma série de processos de limpeza e transformação, incluindo:
+     - Remoção de linhas com valores faltantes ou inválidos.
+     - Conversão de tipos de dados para garantir consistência.
+     - Remoção de duplicatas e dados inconsistentes (como `quantity <= 0` ou `unitprice <= 0`).
+   - **Justificativa**:
+     - Esses processos garantem a qualidade dos dados, eliminando inconsistências que poderiam comprometer as análises.
+     - A remoção de duplicatas e dados inválidos evita distorções nos resultados finais.
+
+### 5. **Uso do Google Cloud Platform (GCP)**
+   - **Decisão**: Utilizei o GCP para armazenamento (Google Cloud Storage) e processamento de dados (BigQuery).
+   - **Justificativa**:
+     - O GCP oferece uma infraestrutura escalável e confiável para pipelines de dados.
+     - A integração entre GCS e BigQuery é simples e eficiente, permitindo carregar grandes volumes de dados rapidamente.
+
+### 6. **Dashboard no Power BI**
+   - **Decisão**: Incluí um dashboard no Power BI conectado diretamente à tabela do BigQuery.
+   - **Justificativa**:
+     - O Power BI é uma ferramenta poderosa para visualização de dados, permitindo a criação de relatórios interativos e dashboards intuitivos.
+     - A conexão direta com o BigQuery garante que os dados exibidos estejam sempre atualizados.
+
+### 7. **Facilidade de Replicação e Adaptação**
+   - **Decisão**: O projeto foi desenvolvido de forma modular, com scripts separados para extração/transformação e carga.
+   - **Justificativa**:
+     - Essa modularidade facilita a replicação da pipeline para outros projetos ou a adaptação para uso com ferramentas de orquestração como Airflow.
+     - A estrutura do código também permite a inclusão de novas etapas de processamento sem afetar o funcionamento existente.
+
+### 8. **Documentação Detalhada**
+   - **Decisão**: Incluí uma documentação detalhada no README, explicando cada etapa do processo e as decisões tomadas.
+   - **Justificativa**:
+     - A documentação clara e completa facilita a compreensão do projeto por outros desenvolvedores ou stakeholders.
+     - Também serve como um guia para futuras manutenções ou expansões da pipeline.
+
+---
+
+Essas decisões foram tomadas com o objetivo de garantir que a pipeline seja eficiente, escalável e de fácil manutenção, ao mesmo tempo em que atende às necessidades de análise de dados do negócio.
 
 ## Contribuição
 
 Sinta-se à vontade para contribuir com melhorias, correções ou novas funcionalidades. Abra uma issue ou envie um pull request.
 
-## Licença
-
-Este projeto está licenciado sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
-
-Nota: Certifique-se de substituir as variáveis de configuração nos scripts pelos dados do seu projeto GCP antes de executar a pipeline.
