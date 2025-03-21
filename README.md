@@ -44,6 +44,7 @@ gcloud config get-value project
 
 1. Certifique-se de que o SDK do GCP está instalado e configurado.
 2. Substitua as variáveis de configuração nos scripts Python (`extract_and_transf.py` e `load_bigquery.py`) com os dados do seu projeto GCP.
+3. Cria um ambiente virtual e instale as dependencias do projeto que estão no arquivo pipeline/requirements.txt
 
 ### Executando a Pipeline:
 
