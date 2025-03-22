@@ -59,6 +59,18 @@ Este script executará os seguintes passos:
 - Extração e transformação dos dados (`extract_and_transf.py`).
 - Carregamento dos dados no BigQuery (`load_bigquery.py`).
 
+### Executando o Script Separado `load_postgres.py`:
+
+Caso você queira carregar os dados diretamente em PostgreSQL instanciado no GCP, executae o script load_postgres.py separadamente. Este script conecta-se ao banco de dados PostgreSQL e insere os dados transformados.
+
+Para rodá-lo, basta executar:
+
+```bash
+python load_postgres.py
+```
+
+Certifique-se de configurar as credenciais do banco de dados PostgreSQL no script antes de executá-lo.
+
 ## Detalhes dos Scripts
 
 ### `extract_and_transf.py`
@@ -113,6 +125,37 @@ def create_bigquery_table(project_id, dataset_id, table_id, file_path):
     pass
 
 # Processo de carregamento dos dados no BigQuery
+# ...
+```
+### `load_postgres.py`
+
+Este script carrega o dataset transformado em um banco de dados PostgreSQL. Ele pode ser executado separadamente da pipeline para inserir dados diretamente no PostgreSQL.
+
+```python
+import pandas as pd
+import psycopg2
+
+# Configurações do PostgreSQL
+DB_HOST = "seu_host_postgres"
+DB_NAME = "seu_db"
+DB_USER = "seu_usuario"
+DB_PASSWORD = "sua_senha"
+
+# Função para carregar dados no PostgreSQL
+def load_data_to_postgres(file_path):
+    conn = psycopg2.connect(host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD)
+    cur = conn.cursor()
+    
+    # Carregar os dados no banco de dados
+    df = pd.read_csv(file_path)
+    
+    for index, row in df.iterrows():
+        cur.execute("INSERT INTO ecommerce_table (invoiceno, stockcode, description, quantity, invoicedate, unitprice, customerid, country) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
+                    (row['invoiceno'], row['stockcode'], row['description'], row['quantity'], row['invoicedate'], row['unitprice'], row['customerid'], row['country']))
+    
+    conn.commit()
+    cur.close()
+    conn.close()
 # ...
 ```
 
