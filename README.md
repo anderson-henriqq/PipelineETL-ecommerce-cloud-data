@@ -173,7 +173,7 @@ O dashboard no Power BI está configurado para se conectar diretamente à tabela
 Durante o desenvolvimento desta pipeline ETL, várias decisões foram tomadas para garantir que o projeto fosse eficiente, escalável e de fácil manutenção. Abaixo estão as principais decisões e suas justificativas:
 
 ### 1. **Escolha de Scripts Python para a Pipeline**
-   - **Decisão**: Optei por implementar a pipeline utilizando scripts Python em vez de ferramentas de orquestração como Apache Airflow.
+   - **Decisão**: Optei por implementar a pipeline utilizando scripts Python e bash em vez de ferramentas de orquestração como Apache Airflow.
    - **Justificativa**: 
      - A pipeline não é complexa o suficiente para justificar o uso de um orquestrador como o Airflow. A simplicidade dos scripts Python permite uma execução direta e fácil de entender.
      - No entanto, a estrutura do projeto foi pensada para ser facilmente adaptável ao Airflow no futuro, caso a necessidade de orquestração e agendamento de tarefas se torne relevante.
